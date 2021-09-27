@@ -35,7 +35,8 @@ def get_config(name):
 def get_next_task(name):
     implant = mongo.db.implants.find_one({"name": name})
     aesProvider = AESProvider(implant["aesKey"])
-    implant["tasks"].append("""{"taskName": "execute", "payload" : "ping 127.0.0.1", "result" :"pending"}""")
+    task = {"taskName": "cmdExecute", "payload" : "echo test > C:\\Users\\Samue\\Documents\\sharedVM\\wtf.txt", "result" :"pending"}
+    implant["tasks"].append(json.dumps(task))
     try:
         implant["tasks"][0]
     except:
