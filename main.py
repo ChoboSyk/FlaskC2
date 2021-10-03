@@ -111,4 +111,4 @@ def serializeImplant(implant):
     del implant["aesKey"]
     return json.dumps(implant)
 
-app.run()
+app.run(host="localhost", port=443, ssl_context='adhoc')
